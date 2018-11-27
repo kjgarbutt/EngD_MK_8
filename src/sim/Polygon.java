@@ -3,6 +3,8 @@ package sim;
 import sim.util.geo.MasonGeometry;
 import java.util.ArrayList;
 
+import schellingpolygon.Person;
+
 /**
  * Polygon.java
  *
@@ -16,24 +18,35 @@ import java.util.ArrayList;
  * $Id: Polygon.java 842 2012-12-18 01:09:18Z mcoletti $
  */
 public class Polygon extends MasonGeometry	{
-    String soc;
+	int id = -1;
+	String polyColour;
 
-    ArrayList<Polygon> neighbors;
+    ArrayList<Polygon> osviPolygons;
 
     public Polygon()	{
         super();
-        neighbors = new ArrayList<Polygon>();
+        osviPolygons = new ArrayList<Polygon>();
     }
 
     public void init()	{
-        soc = getStringAttribute("RankColN");
-        //soc = getIntegerAttribute("RankColN");
+    	id = getIntegerAttribute("ID").intValue();
+        polyColour = getStringAttribute("RankColN");
     }
-
-    String getSoc()	{
-        if (soc == null)	{
+    
+    int getID()
+    {
+        if (id == -1)
+        {
             init();
         }
-        return soc;
+        return id;
+    }
+
+    String getPolyColour()	{
+        if (polyColour == null)
+        {
+            init();
+        }
+        return polyColour;
     }
 }

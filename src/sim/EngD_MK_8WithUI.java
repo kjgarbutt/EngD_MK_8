@@ -27,9 +27,9 @@ import swise.visualization.SegmentedColorMap;
 
 public class EngD_MK_8WithUI extends GUIState {
 
-	//////////////////////////////////////////////////////////////////////////////
-	/////////////////////////// DISPLAY FUNCTIONS ////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	/////////////// DISPLAY FUNCTIONS ///////////////
+	/////////////////////////////////////////////////
 
 	//SparseGridPortrayal2D driversPortrayal = new SparseGridPortrayal2D ();
 	public Display2D display;
@@ -52,10 +52,10 @@ public class EngD_MK_8WithUI extends GUIState {
     XYSeries avgSpeed;
     XYSeries minSpeed;
     
-	//////////////////////////////////////////////////////////////////////////////
-	/////////////////////////// BEGIN FUNCTIONS //////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////
-	
+	///////////////////////////////////////////////
+    /////////////// BEGIN FUNCTIONS ///////////////
+	///////////////////////////////////////////////
+    
 	public EngD_MK_8WithUI(SimState state) {
 		super(state);
 	}
@@ -103,8 +103,8 @@ public class EngD_MK_8WithUI extends GUIState {
 		boundary.setPortrayalForAll(new GeomPortrayal(new Color(255,150,150, 50), 2, false));
 		boundary.setImmutableField(true);
 		
-		//osvi.setField(world.osviLayer);
-        //osvi.setPortrayalForAll(new OSVIPolyPortrayal());
+		osvi.setField(world.osviLayer);
+        osvi.setPortrayalForAll(new OSVIPolyPortrayal());
 		
 		roads.setField(world.roadLayer);
 		//roads.setPortrayalForAll(new GeomPortrayal(new Color(100,100,100, 50), 2, false));
@@ -146,7 +146,7 @@ public class EngD_MK_8WithUI extends GUIState {
         drivers.setPortrayalForAll(new GeomPortrayal(Color.MAGENTA, 150, true));
 		
 		display.reset();
-		//display.setBackdrop(new Color(10,10,10));
+		//display.setBackdrop(new Color(10,10,10)); // black
 		display.setBackdrop(Color.WHITE);
 		// redraw the display
 		display.repaint();
@@ -154,7 +154,7 @@ public class EngD_MK_8WithUI extends GUIState {
 	
 	
 	/**
-     * /////////////////////// Poly Portrayal Colours ////////////////////////
+     * /////////////// Poly Portrayal Colours ///////////////
      * The portrayal used to display Polygons with the appropriate color
      * */
     class OSVIPolyPortrayal extends GeomPortrayal
@@ -167,22 +167,22 @@ public class EngD_MK_8WithUI extends GUIState {
         {
             Polygon poly = (Polygon) object;
 
-            if (poly.getSoc().equals("Red"))
+            if (poly.getPolyColour().equals("Red"))
             {
                 paint = Color.red;
             }
 
-            else if (poly.getSoc().equals("Orange"))
+            else if (poly.getPolyColour().equals("Orange"))
             {
                 paint = Color.orange;
             }
 
-            else if (poly.getSoc().equals("Yellow"))
+            else if (poly.getPolyColour().equals("Yellow"))
             {
                 paint = Color.yellow;
             }
 
-            else if (poly.getSoc().equals("Green"))
+            else if (poly.getPolyColour().equals("Green"))
             {
                 paint = Color.green;
             }
@@ -193,7 +193,6 @@ public class EngD_MK_8WithUI extends GUIState {
 
             super.draw(object, graphics, info);
         }
-
     }
     
     /**
@@ -244,14 +243,14 @@ public class EngD_MK_8WithUI extends GUIState {
     
 	
     /**
-     * /////////////////////// Visualisation Format //////////////////////////
+     * /////////////// Visualisation Format ///////////////
      * Initializes the simulation visualization. Sets up the display
      * window, the JFrames, and the chart structure.
      */
 	public void init(Controller c) {
 		super.init(c);
 
-		/////////////////////////// MAIN DISPLAY /////////////////////////////
+		/////////////// MAIN DISPLAY ///////////////
 		// makes the displayer and visualises the maps
 		display = new Display2D((int)(EngD_MK_8.grid_width), (int)(EngD_MK_8.grid_height), this);
 		// turn off clipping
@@ -264,8 +263,7 @@ public class EngD_MK_8WithUI extends GUIState {
         display.attach(floods3, "FZ3 Zone");
 		display.attach(roads, "Roads");
 		display.attach(centroids, "Centroids");
-		display.attach(deliveryLocations, "Delivery Locations");
-		//display.attach(deliveryLocations, "Delivery Locations", false);
+		display.attach(deliveryLocations, "Delivery Locations"); //, false);
 		display.attach(headquarters, "HQ");
 		display.attach(drivers, "Drivers");
 		
@@ -274,7 +272,7 @@ public class EngD_MK_8WithUI extends GUIState {
 		c.registerFrame(displayFrame); // register the frame so it appears in the "Display" list
 		displayFrame.setVisible(true);		
 		
-		///////////////////////////// CHART //////////////////////////////////
+		/////////////// CHART ///////////////
         //trafficChart = new TimeSeriesChartGenerator();
         //trafficChart.setTitle("Traffic Stats");
         //trafficChart.setYAxisLabel("Speed");
@@ -285,7 +283,7 @@ public class EngD_MK_8WithUI extends GUIState {
 	}
 	
 	/**
-     * /////////////////////// Model Finish //////////////////////////////////
+     *  /////////////// Model Finish ///////////////
      * Quits the simulation and cleans up.
      */
 	public void quit() {
@@ -299,7 +297,7 @@ public class EngD_MK_8WithUI extends GUIState {
 	}
 
     /**
-     * //////////////////////// Simulation Name //////////////////////////////
+     * /////////////// Simulation Name ///////////////
      * @return name of the simulation
      */
     public static String getName()	{

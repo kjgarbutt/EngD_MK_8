@@ -67,7 +67,7 @@ import objects.Vehicle;
  */
 public class EngD_MK_8 extends SimState {
 
-	/////////////// Model Parameters ///////////////////////////////////
+	/////////////// Model Parameters ///////////////
 
 	private static final long serialVersionUID = 1L;
 	public static int grid_width = 900;
@@ -87,13 +87,13 @@ public class EngD_MK_8 extends SimState {
 	public static int numBays = 10;
 	public static double probFailedDelivery = .1;
 
-	/////////////// Data Sources ///////////////////////////////////////
+	/////////////// Data Sources ///////////////
 
 	String dirName = "data/";
 
-	//// END Data Sources ////////////////////////
+	/////////////// END Data Sources ///////////////
 
-	/////////////// Containers ///////////////////////////////////////
+	/////////////// Containers ///////////////
 
 	public GeomVectorField baseLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField osviLayer = new GeomVectorField(grid_width, grid_height);
@@ -106,8 +106,6 @@ public class EngD_MK_8 extends SimState {
 	public GeomVectorField centroidsLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField deliveryLocationLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField agentLayer = new GeomVectorField(grid_width, grid_height);
-	// public GeomVectorField parkingLayer = new GeomVectorField(grid_width,
-	// grid_height);
 	public GeomVectorField networkLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField networkEdgeLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField majorRoadNodesLayer = new GeomVectorField(grid_width, grid_height);
@@ -116,9 +114,9 @@ public class EngD_MK_8 extends SimState {
 	public Bag roadNodes = new Bag();
 	public Network roads = new Network(false);
 
-	/////////////// End Containers ///////////////////////////////////////
+	/////////////// End Containers ///////////////
 
-	/////////////// Objects //////////////////////////////////////////////
+	/////////////// Objects ///////////////
 
 	// Model ArrayLists for agents and OSVI Polygons
 	public ArrayList<Driver> agents = new ArrayList<Driver>(10);
@@ -136,11 +134,11 @@ public class EngD_MK_8 extends SimState {
 
 	boolean verbose = false;
 
-	/////////////// END Objects //////////////////////////////////////////
+	/////////////// END Objects ///////////////
 
-	///////////////////////////////////////////////////////////////////////////
-	/////////////////////////// BEGIN functions ///////////////////////////////
-	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////
+	/////////////// BEGIN functions ///////////////
+	///////////////////////////////////////////////
 
 	/**
 	 * Default constructor function
@@ -153,7 +151,7 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	/**
-	 * //////////////////////// OSVI Polygon Setup ///////////////////////////////
+	 * /////////////// OSVI Polygon Setup ///////////////
 	 * Polygon Setup
 	 */
 	void setup() {
@@ -193,7 +191,6 @@ public class EngD_MK_8 extends SimState {
 			//InputCleaning.readInVectorLayer(baseLayer, dirName + "GloucestershireFinal_LSOA1.shp", "OSVI", new Bag());
 			InputCleaning.readInVectorLayer(fz2Layer, dirName + "Gloucestershire_FZ_2.shp", "Flood Zone 2", new Bag());
 			InputCleaning.readInVectorLayer(fz3Layer, dirName + "Gloucestershire_FZ_3.shp", "Flood Zone 3", new Bag());
-			// InputCleaning.readInVectorLayer(parkingLayer, dirName + "parking.shp",
 			// "Parking", new Bag());
 
 			//////////////////////////////////////////////
@@ -289,7 +286,7 @@ public class EngD_MK_8 extends SimState {
 			System.out.println("Done!");
 
 			//////////////////////////////////////////////
-			////////////////// AGENTS ///////////////////
+			////////////////// AGENTS ////////////////////
 			//////////////////////////////////////////////
 
 			for (Object o : depotLayer.getGeometries()) {
@@ -463,7 +460,7 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	/**
-	 * ///////////////////////// Setup agentGoals /////////////////////////////////
+	 * /////////////// Setup agentGoals ///////////////
 	 * Read in the agent goals CSV
 	 * 
 	 * @param agentfilename
@@ -579,7 +576,7 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	/**
-	 * //////////////////////// Main Function ////////////////////////////////////
+	 * /////////////// Main Function ///////////////
 	 * Main function allows simulation to be run in stand-alone, non-GUI mode
 	 */
 	public static void main(String[] args) {
