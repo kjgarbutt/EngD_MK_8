@@ -38,7 +38,7 @@ import swise.objects.NetworkUtilities;
 import swise.objects.PopSynth;
 import swise.objects.network.GeoNode;
 import swise.objects.network.ListEdge;
-import utilities.DepotUtilities;
+import utilities.HeadquartersUtilities;
 import utilities.DriverUtilities;
 import utilities.InputCleaning;
 import utilities.RoadNetworkUtilities;
@@ -53,9 +53,9 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
 
 import ec.util.MersenneTwisterFast;
-import objects.Depot;
+import objects.Headquarters;
 import objects.Driver;
-import objects.Parcel;
+import objects.AidParcel;
 import objects.Vehicle;
 
 /**
@@ -65,7 +65,7 @@ import objects.Vehicle;
  * @author swise
  *
  */
-public class SimpleDrivers extends SimState {
+public class EngD_MK_8 extends SimState {
 
 	/////////////// Model Parameters ///////////////////////////////////
 
@@ -126,7 +126,7 @@ public class SimpleDrivers extends SimState {
 	ArrayList<Integer> visitedWards = new ArrayList<Integer>(); // TODO record visited LSOAs
 	ArrayList<Polygon> osviPolys = new ArrayList<Polygon>();
 	ArrayList<String> csvData = new ArrayList<String>();
-	ArrayList<ArrayList<Parcel>> rounds;
+	ArrayList<ArrayList<AidParcel>> rounds;
 
 	public GeometryFactory fa = new GeometryFactory();
 
@@ -147,7 +147,7 @@ public class SimpleDrivers extends SimState {
 	 * 
 	 * @param seed
 	 */
-	public SimpleDrivers(long seed) {
+	public EngD_MK_8(long seed) {
 		super(seed);
 		random = new MersenneTwisterFast(12345);
 	}
@@ -293,7 +293,7 @@ public class SimpleDrivers extends SimState {
 			//////////////////////////////////////////////
 
 			for (Object o : depotLayer.getGeometries()) {
-				Depot d = (Depot) o;
+				Headquarters d = (Headquarters) o;
 				generateRandomParcels(d);
 				d.generateRounds();
 			}
@@ -355,7 +355,7 @@ public class SimpleDrivers extends SimState {
 			//int numbays = 15;
 			GeoNode gn = snapPointToNode(mg.geometry.getCoordinate());
 
-			Depot d = new Depot(gn.geometry.getCoordinate(), numBays, this);
+			Headquarters d = new Headquarters(gn.geometry.getCoordinate(), numBays, this);
 			d.setNode(gn);
 
 			depotLayer.addGeometry(d);
@@ -435,9 +435,9 @@ public class SimpleDrivers extends SimState {
 			return null;
 	}
 
-	public void generateRandomParcels(Depot d) {
+	public void generateRandomParcels(Headquarters d) {
 
-		ArrayList<Parcel> myParcels = new ArrayList<Parcel>();
+		ArrayList<AidParcel> myParcels = new ArrayList<AidParcel>();
 		Bag centroids = centroidsLayer.getGeometries();
 
 		for (int i = 0; i < numParcels; i++) {
@@ -456,7 +456,7 @@ public class SimpleDrivers extends SimState {
 			// Coordinate myc = new Coordinate(random.nextInt(myw) + myminx,
 			// random.nextInt(myh) + myminy);
 
-			Parcel p = new Parcel(d);
+			AidParcel p = new AidParcel(d);
 			p.setDeliveryLocation(myCoordinate);
 			myParcels.add(p);
 		}
@@ -474,7 +474,7 @@ public class SimpleDrivers extends SimState {
 		String csvGoal = null;
 		BufferedReader agentGoalsBuffer = null;
 
-		String agentFilePath = SimpleDrivers.class.getResource(agentfilename).getPath();
+		String agentFilePath = EngD_MK_8.class.getResource(agentfilename).getPath();
 		FileInputStream agentfstream = new FileInputStream(agentFilePath);
 		System.out.println("Reading Agent's Goals file: " + agentFilePath);
 
@@ -589,7 +589,7 @@ public class SimpleDrivers extends SimState {
 			System.exit(0);
 		}
 
-		SimpleDrivers simpleDrivers = new SimpleDrivers(System.currentTimeMillis());
+		EngD_MK_8 simpleDrivers = new EngD_MK_8(System.currentTimeMillis());
 
 		System.out.println("Loading...");
 

@@ -6,10 +6,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 public interface Burdenable {
 
-	public void addParcel(Parcel p);
-	public boolean removeParcel(Parcel p);
-	public void addParcels(ArrayList <Parcel> ps);
-	public boolean removeParcels(ArrayList <Parcel> ps);
+	public void addParcel(AidParcel p);
+	public boolean removeParcel(AidParcel p);
+	public void addParcels(ArrayList <AidParcel> ps);
+	public boolean removeParcels(ArrayList <AidParcel> ps);
 	public Coordinate getLocation();
 	public boolean transferTo(Object o, Burdenable b);
 }

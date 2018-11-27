@@ -4,34 +4,34 @@ import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import sim.SimpleDrivers;
+import sim.EngD_MK_8;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import swise.agents.SpatialAgent;
 import swise.objects.network.GeoNode;
-import utilities.DepotUtilities;
+import utilities.HeadquartersUtilities;
 
-public class Depot extends SpatialAgent implements Burdenable {
+public class Headquarters extends SpatialAgent implements Burdenable {
 
-	SimpleDrivers world;
+	EngD_MK_8 world;
 	
 	GeoNode myNode = null;
 	
-	ArrayList <Parcel> parcels;
-	ArrayList <ArrayList <Parcel>> rounds;
+	ArrayList <AidParcel> parcels;
+	ArrayList <ArrayList <AidParcel>> rounds;
 
 	int numBays;
 	ArrayList <Driver> inBays;
 	ArrayList <Driver> waiting;
 	
-	public Depot (Coordinate c, int numbays, SimpleDrivers world){
+	public Headquarters (Coordinate c, int numbays, EngD_MK_8 world){
 		super(c);
-		parcels = new ArrayList <Parcel> ();
+		parcels = new ArrayList <AidParcel> ();
 		inBays = new ArrayList <Driver> ();
 		waiting = new ArrayList <Driver> ();
 		this.world = world;
 		this.numBays = numbays;
-		rounds = new ArrayList <ArrayList <Parcel>> ();
+		rounds = new ArrayList <ArrayList <AidParcel>> ();
 	}
 	
 	public void setNode(GeoNode node){
@@ -41,22 +41,22 @@ public class Depot extends SpatialAgent implements Burdenable {
 	public GeoNode getNode(){ return myNode;}
 	
 	@Override
-	public void addParcel(Parcel p) {
+	public void addParcel(AidParcel p) {
 		parcels.add(p);
 	}
 
 	@Override
-	public boolean removeParcel(Parcel p) {
+	public boolean removeParcel(AidParcel p) {
 		return parcels.remove(p);
 	}
 
-	public boolean removeParcels(ArrayList <Parcel> ps){
+	public boolean removeParcels(ArrayList <AidParcel> ps){
 		return parcels.removeAll(ps);
 	}
 	
 
 	@Override
-	public void addParcels(ArrayList<Parcel> ps) {
+	public void addParcels(ArrayList<AidParcel> ps) {
 		parcels.addAll(ps);
 	}
 
@@ -64,12 +64,12 @@ public class Depot extends SpatialAgent implements Burdenable {
 	public boolean transferTo(Object o, Burdenable b) {
 		try{
 			if(o instanceof ArrayList){
-				parcels.removeAll((ArrayList <Parcel>) o);
-				b.addParcels((ArrayList <Parcel>) o);
+				parcels.removeAll((ArrayList <AidParcel>) o);
+				b.addParcels((ArrayList <AidParcel>) o);
 			}
 			else {
-				parcels.remove((Parcel) o);
-				b.addParcel((Parcel) o);
+				parcels.remove((AidParcel) o);
+				b.addParcel((AidParcel) o);
 			}
 			return true;
 		} catch (Exception e){
@@ -121,10 +121,10 @@ public class Depot extends SpatialAgent implements Burdenable {
 			
 		}
 		
-		return SimpleDrivers.loadingTime;
+		return EngD_MK_8.loadingTime;
 	}
 	
-	ArrayList <Parcel> getNextRound(){
+	ArrayList <AidParcel> getNextRound(){
 		return rounds.remove(0);
 	}
 	
@@ -138,7 +138,7 @@ public class Depot extends SpatialAgent implements Burdenable {
 
 				@Override
 				public void step(SimState state) {
-					ArrayList <Parcel> newRound = getNextRound();
+					ArrayList <AidParcel> newRound = getNextRound();
 					if(d.myVehicle != null){
 						transferTo(newRound, d.myVehicle);	
 						d.updateRound();
@@ -169,18 +169,18 @@ public class Depot extends SpatialAgent implements Burdenable {
 			if(waiting.size() > 0){
 				Driver n = waiting.remove(0);
 				inBays.add(n);
-				world.schedule.scheduleOnce(world.schedule.getTime() + SimpleDrivers.loadingTime, n);
+				world.schedule.scheduleOnce(world.schedule.getTime() + EngD_MK_8.loadingTime, n);
 			}
 		}
 		else
 			System.out.println("Error: driver was never in bay");
 	}
 	
-	public void addRounds(ArrayList <ArrayList <Parcel>> rounds){
+	public void addRounds(ArrayList <ArrayList <AidParcel>> rounds){
 		this.rounds = rounds;
 	}
 	
 	public void generateRounds(){
-		rounds.addAll(DepotUtilities.gridDistribution(parcels, world.deliveryLocationLayer, world.approxManifestSize));
+		rounds.addAll(HeadquartersUtilities.gridDistribution(parcels, world.deliveryLocationLayer, world.approxManifestSize));
 	}
 }

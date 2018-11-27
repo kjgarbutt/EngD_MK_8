@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import sim.SimpleDrivers;
+import sim.EngD_MK_8;
 import swise.agents.MobileAgent;
 
-public class Parcel extends MobileAgent {
+public class AidParcel extends MobileAgent {
 
 	Burdenable carryingUnit = null;
 	Coordinate deliveryLocation;
@@ -16,7 +16,7 @@ public class Parcel extends MobileAgent {
 	int status; // 0 = undelivered, 1 = failed delivery attempt, 2 = out for delivery, 3 =
 				// delivered
 
-	public Parcel(Burdenable carrier) {
+	public AidParcel(Burdenable carrier) {
 		super((Coordinate) carrier.getLocation());
 		carryingUnit = carrier;
 		history = new ArrayList<String>();
@@ -51,7 +51,7 @@ public class Parcel extends MobileAgent {
 	}
 
 	public boolean deliver() {
-		if (getLocation().distance(deliveryLocation) < SimpleDrivers.resolution) {
+		if (getLocation().distance(deliveryLocation) < EngD_MK_8.resolution) {
 			// TODO make it move away!!
 			carryingUnit.removeParcel(this);
 			status = 3; // delivered

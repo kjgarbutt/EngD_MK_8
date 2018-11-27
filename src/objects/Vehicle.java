@@ -10,7 +10,7 @@ import swise.agents.MobileAgent;
 public class Vehicle extends MobileAgent implements Burdenable {
 
 	Driver owner;
-	ArrayList <Parcel> parcels = new ArrayList <Parcel> ();
+	ArrayList <AidParcel> parcels = new ArrayList <AidParcel> ();
 	
 	public Vehicle(Coordinate c, Driver d){
 		super((Coordinate)c.clone());
@@ -19,22 +19,22 @@ public class Vehicle extends MobileAgent implements Burdenable {
 	}
 	
 	@Override
-	public void addParcel(Parcel p) {
+	public void addParcel(AidParcel p) {
 		parcels.add(p);
 	}
 
 	@Override
-	public boolean removeParcel(Parcel p) {
+	public boolean removeParcel(AidParcel p) {
 		return parcels.remove(p);
 	}
 
 	@Override
-	public void addParcels(ArrayList<Parcel> ps) {
+	public void addParcels(ArrayList<AidParcel> ps) {
 		parcels.addAll(ps);
 	}
 
 	@Override
-	public boolean removeParcels(ArrayList<Parcel> ps) {
+	public boolean removeParcels(ArrayList<AidParcel> ps) {
 		return parcels.removeAll(ps);
 	}
 
@@ -47,12 +47,12 @@ public class Vehicle extends MobileAgent implements Burdenable {
 	public boolean transferTo(Object o, Burdenable b) {
 		try{
 			if(o instanceof ArrayList){
-				parcels.removeAll((ArrayList <Parcel>) o);
-				b.addParcels((ArrayList <Parcel>) o);
+				parcels.removeAll((ArrayList <AidParcel>) o);
+				b.addParcels((ArrayList <AidParcel>) o);
 			}
 			else {
-				parcels.remove((Parcel) o);
-				b.addParcel((Parcel) o);
+				parcels.remove((AidParcel) o);
+				b.addParcel((AidParcel) o);
 			}
 			return true;
 		} catch (Exception e){

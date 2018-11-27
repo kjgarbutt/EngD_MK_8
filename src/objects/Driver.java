@@ -2,7 +2,7 @@ package objects;
 
 import java.util.ArrayList;
 
-import sim.SimpleDrivers;
+import sim.EngD_MK_8;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.engine.Stoppable;
@@ -21,14 +21,14 @@ import com.vividsolutions.jts.linearref.LengthIndexedLine;
 
 public class Driver extends TrafficAgent implements Steppable, Burdenable {
 
-	SimpleDrivers world;
+	EngD_MK_8 world;
 	Coordinate homeBase = null;
 	Coordinate targetDestination = null;
 	double roundStartTime = -1;
 	double roundDriveDistance = 0, roundWalkDistance = 0;
 
-	ArrayList<Parcel> parcels = new ArrayList<Parcel>();
-	ArrayList<Parcel> myRound = new ArrayList<Parcel>();
+	ArrayList<AidParcel> parcels = new ArrayList<AidParcel>();
+	ArrayList<AidParcel> myRound = new ArrayList<AidParcel>();
 	ArrayList<String> history = new ArrayList<String>();
 
 	int index = 0;
@@ -37,19 +37,19 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 
 	double enteredRoadSegment = -1;
 
-	Parcel currentDelivery = null;
+	AidParcel currentDelivery = null;
 	Vehicle myVehicle = null;
 	boolean inVehicle = false;
 
-	public Driver(SimpleDrivers world, Coordinate c) {
+	public Driver(EngD_MK_8 world, Coordinate c) {
 		super(c);
 		homeBase = (Coordinate) c.clone();
 		this.world = world;
-		parcels = new ArrayList<Parcel>();
+		parcels = new ArrayList<AidParcel>();
 
 		speed = world.speed_vehicle;
 
-		edge = SimpleDrivers.getClosestEdge(c, world.resolution, world.networkEdgeLayer, world.fa);
+		edge = EngD_MK_8.getClosestEdge(c, world.resolution, world.networkEdgeLayer, world.fa);
 
 		if (edge == null) {
 			System.out.println("\tINIT_ERROR: no nearby edge");
@@ -149,7 +149,7 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 		// otherwise, if you've still got parcels to deliver, deliver that parcel!
 		else if (parcels.size() > index) {
 
-			Parcel nextParcel = parcels.get(index);
+			AidParcel nextParcel = parcels.get(index);
 			currentDelivery = nextParcel;
 			headFor(nextParcel.deliveryLocation);
 			roundDriveDistance += calculateDistance(path);
@@ -159,7 +159,7 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 
 		else if (myRound.size() > 0) {
 			// TODO assumes I'm at the vehicle!!!!
-			Parcel nextParcel = myRound.get(0);
+			AidParcel nextParcel = myRound.get(0);
 			nextParcel.transfer(myVehicle, this);
 			currentDelivery = nextParcel;
 			headFor(nextParcel.deliveryLocation);
@@ -185,7 +185,7 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 					+ (world.schedule.getTime() - roundStartTime));
 			Bag b = world.depotLayer.getObjectsWithinDistance(geometry, world.resolution);
 			if (b.size() > 0) {
-				Depot d = (Depot) b.get(0);
+				Headquarters d = (Headquarters) b.get(0);
 				d.enterDepot(this);
 				if (parcels.size() > 0) {
 					System.out.println(
@@ -199,21 +199,21 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 	}
 
 	@Override
-	public void addParcel(Parcel p) {
+	public void addParcel(AidParcel p) {
 		parcels.add(p);
 	}
 
 	@Override
-	public boolean removeParcel(Parcel p) {
+	public boolean removeParcel(AidParcel p) {
 		return parcels.remove(p);
 	}
 
-	public boolean removeParcels(ArrayList<Parcel> ps) {
+	public boolean removeParcels(ArrayList<AidParcel> ps) {
 		return parcels.removeAll(ps);
 	}
 
 	@Override
-	public void addParcels(ArrayList<Parcel> ps) {
+	public void addParcels(ArrayList<AidParcel> ps) {
 		parcels.addAll(ps);
 	}
 
@@ -223,24 +223,24 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 		if (parcels.size() <= 1 && (myVehicle != null && myVehicle.parcels.size() <= 1))
 			return;
 
-		ArrayList<Parcel> tempParcels = new ArrayList<Parcel>(parcels);
+		ArrayList<AidParcel> tempParcels = new ArrayList<AidParcel>(parcels);
 		if (myVehicle != null)
 			tempParcels.addAll(myVehicle.parcels);
 
 		for (int i = 1; i < tempParcels.size(); i++) {
-			Parcel p = tempParcels.get(i - 1);
+			AidParcel p = tempParcels.get(i - 1);
 			double dist = Double.MAX_VALUE;
 			int best = -1;
 
 			for (int j = i; j < tempParcels.size(); j++) {
-				Parcel pj = tempParcels.get(j);
+				AidParcel pj = tempParcels.get(j);
 				double pjdist = pj.deliveryLocation.distance(p.deliveryLocation);
 				if (pjdist < dist) {
 					dist = pjdist;
 					best = j;
 				}
 			}
-			Parcel closestParcel = tempParcels.remove(best);
+			AidParcel closestParcel = tempParcels.remove(best);
 			tempParcels.add(i, closestParcel);
 		}
 		myRound = tempParcels;
@@ -250,11 +250,11 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 	public boolean transferTo(Object o, Burdenable b) {
 		try {
 			if (o instanceof ArrayList) {
-				parcels.removeAll((ArrayList<Parcel>) o);
-				b.addParcels((ArrayList<Parcel>) o);
+				parcels.removeAll((ArrayList<AidParcel>) o);
+				b.addParcels((ArrayList<AidParcel>) o);
 			} else {
-				parcels.remove((Parcel) o);
-				b.addParcel((Parcel) o);
+				parcels.remove((AidParcel) o);
+				b.addParcel((AidParcel) o);
 			}
 			return true;
 		} catch (Exception e) {
@@ -412,7 +412,7 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 			// it'll slow
 			// proportionately
 			double val = ((ListEdge) edge).lengthPerElement() / 5;
-			if (val < 10 && this.speed == SimpleDrivers.speed_vehicle) {
+			if (val < 10 && this.speed == EngD_MK_8.speed_vehicle) {
 				speed = mySpeed / val;// minSpeed);
 				if (speed < 1) { // if my speed is super low, set it to some baseline to keep traffic moving at
 									// all

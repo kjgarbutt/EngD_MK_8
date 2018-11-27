@@ -9,13 +9,13 @@ import java.util.Map.Entry;
 
 import com.vividsolutions.jts.geom.Point;
 
-import objects.Depot;
+import objects.Headquarters;
 import objects.Driver;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-import sim.SimpleDrivers;
+import sim.EngD_MK_8;
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -27,7 +27,7 @@ import swise.objects.PopSynth;
 
 public class DriverUtilities {
 	
-	public static synchronized ArrayList<Driver> setupDriversAtRandom(GeomVectorField buildings, SimpleDrivers world, 
+	public static synchronized ArrayList<Driver> setupDriversAtRandom(GeomVectorField buildings, EngD_MK_8 world, 
 			GeometryFactory fa, int numDrivers){
 		
 		ArrayList <Driver> agents = new ArrayList <Driver> ();
@@ -55,7 +55,7 @@ public class DriverUtilities {
 	}
 	
 
-	public static synchronized ArrayList<Driver> setupDriversAtDepots(SimpleDrivers world, 
+	public static synchronized ArrayList<Driver> setupDriversAtDepots(EngD_MK_8 world, 
 			GeometryFactory fa, int numDrivers){
 		
 		ArrayList <Driver> agents = new ArrayList <Driver> ();
@@ -65,7 +65,7 @@ public class DriverUtilities {
 		for(int i = 0; i < numDrivers; i++){
 			
 			Object o = myDepots.get(world.random.nextInt(myDepotsSize));
-			Depot depot = (Depot) o;
+			Headquarters depot = (Headquarters) o;
 			Coordinate myC = (Coordinate) depot.geometry.getCoordinate().clone();
 			Driver driver = new Driver(world, myC);
 			agents.add(driver);

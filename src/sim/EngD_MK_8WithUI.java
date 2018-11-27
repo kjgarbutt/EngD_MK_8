@@ -25,7 +25,7 @@ import sim.util.media.chart.TimeSeriesChartGenerator;
 import swise.visualization.AttributePolyPortrayal;
 import swise.visualization.SegmentedColorMap;
 
-public class SimpleDriversWithUI extends GUIState {
+public class EngD_MK_8WithUI extends GUIState {
 
 	//////////////////////////////////////////////////////////////////////////////
 	/////////////////////////// DISPLAY FUNCTIONS ////////////////////////////////
@@ -56,12 +56,12 @@ public class SimpleDriversWithUI extends GUIState {
 	/////////////////////////// BEGIN FUNCTIONS //////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////
 	
-	public SimpleDriversWithUI(SimState state) {
+	public EngD_MK_8WithUI(SimState state) {
 		super(state);
 	}
 	
-	public SimpleDriversWithUI(){
-		super(new SimpleDrivers(System.currentTimeMillis()));
+	public EngD_MK_8WithUI(){
+		super(new EngD_MK_8(System.currentTimeMillis()));
 	}
 	
     /**
@@ -95,7 +95,7 @@ public class SimpleDriversWithUI extends GUIState {
 	}
 	
 	public void setupPortrayals(){
-		SimpleDrivers world = (SimpleDrivers) state;
+		EngD_MK_8 world = (EngD_MK_8) state;
 		
 		System.out.println("...setupPortrayals()");
 		
@@ -103,8 +103,8 @@ public class SimpleDriversWithUI extends GUIState {
 		boundary.setPortrayalForAll(new GeomPortrayal(new Color(255,150,150, 50), 2, false));
 		boundary.setImmutableField(true);
 		
-		osvi.setField(world.osviLayer);
-        osvi.setPortrayalForAll(new OSVIPolyPortrayal());
+		//osvi.setField(world.osviLayer);
+        //osvi.setPortrayalForAll(new OSVIPolyPortrayal());
 		
 		roads.setField(world.roadLayer);
 		//roads.setPortrayalForAll(new GeomPortrayal(new Color(100,100,100, 50), 2, false));
@@ -213,7 +213,7 @@ public class SimpleDriversWithUI extends GUIState {
 			private static final long serialVersionUID = -3749005402522867098L;
 
 			public void step(SimState state)	{
-            	sim.MK_7_1 world = (sim.MK_7_1) state;
+            	sim.MK_8 world = (sim.MK_8) state;
                 double maxS = 0, minS = 10000, avgS = 0, count = 0;
                 //////////////////////////// Main Agent //////////////////////
                 for (Agent a : world.agentList)	{
@@ -253,7 +253,7 @@ public class SimpleDriversWithUI extends GUIState {
 
 		/////////////////////////// MAIN DISPLAY /////////////////////////////
 		// makes the displayer and visualises the maps
-		display = new Display2D((int)(SimpleDrivers.grid_width), (int)(SimpleDrivers.grid_height), this);
+		display = new Display2D((int)(EngD_MK_8.grid_width), (int)(EngD_MK_8.grid_height), this);
 		// turn off clipping
         // display.setClipping(false);
 		
@@ -270,7 +270,7 @@ public class SimpleDriversWithUI extends GUIState {
 		display.attach(drivers, "Drivers");
 		
 		displayFrame = display.createFrame();
-		displayFrame.setTitle("EngD ABM Model MK_7_2");
+		displayFrame.setTitle("EngD ABM Model MK_8");
 		c.registerFrame(displayFrame); // register the frame so it appears in the "Display" list
 		displayFrame.setVisible(true);		
 		
@@ -303,10 +303,10 @@ public class SimpleDriversWithUI extends GUIState {
      * @return name of the simulation
      */
     public static String getName()	{
-        return "EngD ABM Model MK_7_2";
+        return "EngD ABM Model MK_8";
     }
 	
 	public static void main(String [] args){
-		(new SimpleDriversWithUI()).createController();
+		(new EngD_MK_8WithUI()).createController();
 	}
 }
