@@ -3,6 +3,8 @@
 ### Data ###
 *.csv
 *.dbf
+*.sbn
+*.sbx
 *.shp
 *.cpg
 *.prj
