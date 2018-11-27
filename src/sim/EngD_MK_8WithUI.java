@@ -38,7 +38,7 @@ public class EngD_MK_8WithUI extends GUIState {
 	//GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true);
 	private GeomVectorFieldPortrayal roads = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal lsoa = new GeomVectorFieldPortrayal();
-	private GeomVectorFieldPortrayal osvi = new GeomVectorFieldPortrayal(true);
+	GeomVectorFieldPortrayal osvi = new GeomVectorFieldPortrayal(true);
 	private GeomVectorFieldPortrayal boundary = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal floods2 = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal floods3 = new GeomVectorFieldPortrayal();

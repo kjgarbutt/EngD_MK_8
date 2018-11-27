@@ -133,3 +133,4 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/java,data,macos,eclipse
+*.txt
