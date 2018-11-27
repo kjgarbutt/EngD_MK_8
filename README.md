@@ -1,7 +1,7 @@
 # EngD_MK_8
 
 This is a fairly large change from MK_7, with a different structure
-It is still adapted from the MASON demo, "Gridlock", made by Sarah Wise,         
+It is still adapted from the MASON demo, "Gridlock", made by Sarah Wise,
 Mark Coletti, and Andrew Crooks.          
 
 <p>The model reads a number of GIS shapefiles and displays a road network, two
