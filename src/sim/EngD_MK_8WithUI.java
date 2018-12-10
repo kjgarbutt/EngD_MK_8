@@ -39,7 +39,7 @@ public class EngD_MK_8WithUI extends GUIState {
 	public Display2D display;
 	public JFrame displayFrame;
 
-	// GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true);
+	GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal();
 	private GeomVectorFieldPortrayal roads = new GeomVectorFieldPortrayal();
 	// private GeomVectorFieldPortrayal lsoa = new GeomVectorFieldPortrayal();
 	GeomVectorFieldPortrayal osvi = new GeomVectorFieldPortrayal(true);
@@ -62,10 +62,12 @@ public class EngD_MK_8WithUI extends GUIState {
 	/////////////// BEGIN FUNCTIONS ///////////////
 	///////////////////////////////////////////////
 
+	/** constructor function */
 	public EngD_MK_8WithUI(SimState state) {
 		super(state);
 	}
 
+	/** constructor function */
 	public EngD_MK_8WithUI() {
 		super(new EngD_MK_8(System.currentTimeMillis()));
 	}
@@ -110,8 +112,8 @@ public class EngD_MK_8WithUI extends GUIState {
 		boundary.setPortrayalForAll(new GeomPortrayal(new Color(255, 150, 150, 50), 2, false));
 		boundary.setImmutableField(true);
 
-		//osvi.setField(world.osviLayer);
-		//osvi.setPortrayalForAll(new OSVIPolyPortrayal());
+		// osvi.setField(world.osviLayer);
+		// osvi.setPortrayalForAll(new OSVIPolyPortrayal());
 
 		roads.setField(world.roadLayer);
 		// roads.setPortrayalForAll(new GeomPortrayal(new Color(100,100,100, 50), 2,
@@ -136,6 +138,10 @@ public class EngD_MK_8WithUI extends GUIState {
 		headquarters.setField(world.headquartersLayer);
 		headquarters.setPortrayalForAll(new GeomPortrayal(Color.BLACK, 200, true));
 
+		polyPortrayal.setField(world.world);
+        polyPortrayal.setPortrayalForAll(new PolyPortrayal());
+        polyPortrayal.setImmutableField(true);
+		
 		deliveryLocations.setField(world.deliveryLocationLayer);
 		double[] levels = new double[100];
 		Color[] colors = new Color[100];
@@ -162,47 +168,39 @@ public class EngD_MK_8WithUI extends GUIState {
 	}
 
 	/**
-     * /////////////////////// Poly Portrayal Colours ////////////////////////
-     * The portrayal used to display Polygons with the appropriate color
-     * */
-    class OSVIPolyPortrayal extends GeomPortrayal
-    {
+	 * /////////////////////// Poly Portrayal Colours //////////////////////// The
+	 * portrayal used to display Polygons with the appropriate color
+	 */
+	class PolyPortrayal extends GeomPortrayal {
+		
+		private static final long serialVersionUID = 1L;
 
-        private static final long serialVersionUID = 1L;
+		@Override
+		public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
+			Polygon poly = (Polygon) object;
 
-        @Override
-        public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
-        {
-            Polygon poly = (Polygon) object;
+			if (poly.getSoc().equals("Red")) {
+				paint = Color.red;
+			}
 
-            if (poly.getSoc().equals("Red"))
-            {
-                paint = Color.red;
-            }
+			else if (poly.getSoc().equals("Orange")) {
+				paint = Color.orange;
+			}
 
-            else if (poly.getSoc().equals("Orange"))
-            {
-                paint = Color.orange;
-            }
+			else if (poly.getSoc().equals("Yellow")) {
+				paint = Color.yellow;
+			}
 
-            else if (poly.getSoc().equals("Yellow"))
-            {
-                paint = Color.yellow;
-            }
+			else if (poly.getSoc().equals("Green")) {
+				paint = Color.green;
+			} else {
+				paint = Color.gray;
+			}
 
-            else if (poly.getSoc().equals("Green"))
-            {
-                paint = Color.green;
-            }
-            else
-            {
-                paint = Color.gray;
-            }
+			super.draw(object, graphics, info);
+		}
 
-            super.draw(object, graphics, info);
-        }
-
-    }
+	}
 	/**
 	 * Sets up the portrayals within the map visualization.
 	 */
@@ -228,15 +226,15 @@ public class EngD_MK_8WithUI extends GUIState {
 	 * 
 	 * }
 	 */
-
+	
 	/**
 	 * Visualisation Format
 	 * 
 	 * Initializes the simulation visualization. Sets up the display window, the
 	 * JFrames, and the chart structure.
 	 */
-	public void init(Controller c) {
-		super.init(c);
+	public void init(Controller controller) {
+		super.init(controller);
 
 		/////////////// MAIN DISPLAY ///////////////
 		// makes the displayer and visualises the maps
@@ -245,9 +243,10 @@ public class EngD_MK_8WithUI extends GUIState {
 		// display.setClipping(false);
 
 		// Put portrayals in order from bottom layer to top
-		//display.attach(osvi, "OSVI");
+		// display.attach(osvi, "OSVI");
 		// display.attach(boundary, "County Outline");
 		// display.attach(floods2, "FZ2 Zone");
+		display.attach(polyPortrayal, "Polys");
 		display.attach(floods3, "FZ3 Zone");
 		display.attach(roads, "Roads");
 		display.attach(centroids, "Centroids");
@@ -257,7 +256,7 @@ public class EngD_MK_8WithUI extends GUIState {
 
 		displayFrame = display.createFrame();
 		displayFrame.setTitle("EngD ABM Model MK_8");
-		c.registerFrame(displayFrame); // register the frame so it appears in the "Display" list
+		controller.registerFrame(displayFrame); // register the frame so it appears in the "Display" list
 		displayFrame.setVisible(true);
 
 		/////////////// CHART ///////////////
@@ -295,5 +294,8 @@ public class EngD_MK_8WithUI extends GUIState {
 
 	public static void main(String[] args) {
 		(new EngD_MK_8WithUI()).createController();
+		//EngD_MK_8WithUI worldGUI = new EngD_MK_8WithUI();
+        //Console console = new Console(worldGUI);
+        //console.setVisible(true);
 	}
 }

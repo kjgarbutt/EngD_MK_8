@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.channels.FileLock;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -59,10 +60,25 @@ import objects.AidParcel;
 import objects.Vehicle;
 
 /**
- * SimpleDriversDemo is an example of a simple ABM framework to explore
- * different modes of delivery in Central London
+ * "MK_8" is the eighth iteration of my EngD project model. Iteration 8 is 
+ * a major update to MK_7_2. 
  * 
- * @author swise
+ * The model is adapted from the MASON demo, "Gridlock", made by Sarah Wise, 
+ * Mark Coletti, and Andrew Crooks and "SimpleDrivers," made by Sarah Wise.
+ * 
+ * The model is an example of a simple ABM framework to explore delivering 
+ * goods during a flood. The model reads a number of GIS shapefiles and 
+ * displays a road network, two Environment Agency flood maps and a bespoke 
+ * Open Source Vulnerability Index (OSVI). The model reads in a .CSV and 
+ * generates a predetermined number of agents with set characteristics. 
+ * The agents are placed on the road network and are located at a Red Cross 
+ * office. The model reads a separate .CSV and assigns goal locations to each 
+ * agent at random from a predetermined list. The agents are assigned speeds 
+ * at random. Once the model is started, the agents move from A to B, then 
+ * they change direction and head back to their start position. The process 
+ * repeats until the user quits.
+ *
+ * @author KJGarbutt
  *
  */
 public class EngD_MK_8 extends SimState {
@@ -95,6 +111,7 @@ public class EngD_MK_8 extends SimState {
 
 	/////////////// Containers ///////////////
 
+	public GeomVectorField world = new GeomVectorField();
 	public GeomVectorField baseLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField osviLayer = new GeomVectorField(grid_width, grid_height);
 	public GeomVectorField boundaryLayer = new GeomVectorField(grid_width, grid_height);
@@ -122,7 +139,7 @@ public class EngD_MK_8 extends SimState {
 	public ArrayList<Driver> agents = new ArrayList<Driver>(10);
 	ArrayList<Integer> assignedWards = new ArrayList<Integer>();
 	ArrayList<Integer> visitedWards = new ArrayList<Integer>(); // TODO record visited LSOAs
-	ArrayList<Polygon> osviPolys = new ArrayList<Polygon>();
+	ArrayList<Polygon> polys = new ArrayList<Polygon>();
 	ArrayList<String> csvData = new ArrayList<String>();
 	ArrayList<ArrayList<AidParcel>> rounds;
 
@@ -156,8 +173,8 @@ public class EngD_MK_8 extends SimState {
 	 */
 	void setup() {
 		// copy over the geometries into a list of Polygons
-		Bag ps = osviLayer.getGeometries();
-		osviPolys.addAll(ps);
+		Bag ps = world.getGeometries();
+		polys.addAll(ps);
 	}
 
 	/**
@@ -175,13 +192,16 @@ public class EngD_MK_8 extends SimState {
 			//////////////////////////////////////////////
 			///////////// READING IN DATA ////////////////
 			//////////////////////////////////////////////
-
-			GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true); // for OSVI viz.
+			
+			File wardsFile = new File("data/GloucestershireFinal_LSOA1.shp");
+			ShapeFileImporter.read(wardsFile.toURI().toURL(), world, Polygon.class);
+			System.out.println("Reading in OSVI shapefile " + wardsFile);
+			//GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true); // for OSVI viz.
 			GeomVectorField dummyDepotLayer = new GeomVectorField(grid_width, grid_height);
 			InputCleaning.readInVectorLayer(centroidsLayer, dirName + "Gloucestershire_Centroids_with_Road_ID.shp",
-					"Centroids", new Bag()); // Delivery locations
+					"Centroids", new Bag());	// Delivery locations
 			InputCleaning.readInVectorLayer(dummyDepotLayer, dirName + "BRC_HQ_GL.shp", "Depots",
-					new Bag()); // For HQ as Depot
+					new Bag());	// For HQ as Depot
 			InputCleaning.readInVectorLayer(headquartersLayer, dirName + "BRC_HQ_GL.shp", "HQ",
 					new Bag()); // Shows HQ
 			InputCleaning.readInVectorLayer(roadLayer, dirName + "GL_ITN_MultipartToSinglepart.shp", "Road Network",
@@ -212,7 +232,6 @@ public class EngD_MK_8 extends SimState {
 			setup();
 
 			// clean up the road network
-
 			System.out.println("Cleaning the road network...");
 
 			roads = NetworkUtilities.multipartNetworkCleanup(roadLayer, roadNodes, resolution, fa, random, 0);
@@ -234,7 +253,6 @@ public class EngD_MK_8 extends SimState {
 					networkEdgeLayer.addGeometry((MasonGeometry) edge.info);
 					roadLayer.addGeometry((MasonGeometry) edge.info);
 					((MasonGeometry) edge.info).addAttribute("ListEdge", edge);
-
 				}
 			}
 
@@ -268,6 +286,7 @@ public class EngD_MK_8 extends SimState {
 			setupDepots(dummyDepotLayer);
 
 			// reset MBRs in case they got messed up during all the manipulation
+			world.setMBR(MBR);
 			centroidsLayer.setMBR(MBR);
 			roadLayer.setMBR(MBR);
 			networkLayer.setMBR(MBR);
@@ -302,7 +321,6 @@ public class EngD_MK_8 extends SimState {
 				Vehicle v = new Vehicle(p.geometry.getCoordinate(), p);
 				p.assignVehicle(v);
 			}
-			
 
 			// set up the agents in the simulation
 			/*
@@ -544,10 +562,6 @@ public class EngD_MK_8 extends SimState {
 		///////////////////////////////////////////////////////////
 		
 		int id = myCopy.getIntegerAttribute("ID");	// Here, id changes to '190', which is the ID for the highestOSVI
-		//System.out.println();
-		//System.out.println("ID: " + id);	// Prints out: the ID for the highestOSVI
-		//System.out.println("myCopy: " +myCopy);	// Prints out: myCopy: POLYGON ((384298.25880604825 218107.66641233652, 384292.3048735745 218096.84950356343… Makes sense, I think!
-		//System.out.println("id: " +id);	// Prints out: the ID for the highestOSVI
 		assignedWards.add(id);	// add ID to the "assignedWards" ArrayList
 		System.out.println();
 		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA ID: " + id + " ("

@@ -99,11 +99,14 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 				if (world.random.nextDouble() < world.probFailedDelivery) { // failed delivery ):
 					index++;
 					System.out.println(
-							this.toString() + " has NOT been able to deliver parcel to:" + currentDelivery.toString());
+							//this.toString() + " has NOT been able to deliver parcel to:" + currentDelivery.toString());
+							this.driverID + " has NOT been able to deliver parcel to:" + currentDelivery.toString());
+							//this.driverID + " has NOT been able to deliver parcel to:" + currentDelivery.getAttribute("id"));
 				} else { // successful delivery! :)
 					this.removeParcel(currentDelivery);
 					myRound.remove(currentDelivery);
-					System.out.println(this.toString() + " has delivered the parcel to:" + currentDelivery.toString());
+					//System.out.println(this.toString() + " has delivered the parcel to:" + currentDelivery.toString());
+					System.out.println(this.driverID + " has delivered the parcel to:" + currentDelivery.toString());
 					currentDelivery.geometry = world.fa.createPoint(currentDelivery.deliveryLocation);
 					world.deliveryLocationLayer.addGeometry(currentDelivery);
 				}
@@ -186,7 +189,8 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 
 			double roundTime = world.schedule.getTime() - roundStartTime;
 			history.add(this.toString() + "\t" + roundTime + "\t" + roundDriveDistance + "\t" + roundWalkDistance);
-			System.out.println(this.toString() + " is done with the round! It took "
+			//System.out.println(this.toString() + " is done with the round! It took "
+			System.out.println(this.driverID + " is done with the round! It took "
 					+ (world.schedule.getTime() - roundStartTime));
 			Bag b = world.depotLayer.getObjectsWithinDistance(geometry, world.resolution);
 			if (b.size() > 0) {
@@ -194,7 +198,8 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 				d.enterDepot(this);
 				if (parcels.size() > 0) {
 					System.out.println(
-							"Round finished - driver " + this.toString() + " has returned with " + parcels.size());
+							//"Round finished - driver " + this.toString() + " has returned with " + parcels.size());
+							"Round finished - driver " + this.driverID + " has returned with " + parcels.size());
 					transferTo(parcels, d);
 					if (myVehicle != null)
 						myVehicle.transferTo(myVehicle.parcels, d);
