@@ -56,7 +56,7 @@ public class RoadNetworkUtilities {
 	 * @param n - the network to be tested
 	 */
 	public static void testNetworkForIssues(Network n){
-		System.out.println("\n...testing");
+		System.out.println("...testing");
 		for(Object o: n.allNodes){
 			GeoNode node = (GeoNode) o;
 			for(Object p: n.getEdgesOut(node)){

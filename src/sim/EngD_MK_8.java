@@ -213,13 +213,13 @@ public class EngD_MK_8 extends SimState {
 
 			// clean up the road network
 
-			System.out.print("Cleaning the road network...");
+			System.out.println("Cleaning the road network...");
 
 			roads = NetworkUtilities.multipartNetworkCleanup(roadLayer, roadNodes, resolution, fa, random, 0);
 			roadNodes = roads.getAllNodes();
 			RoadNetworkUtilities.testNetworkForIssues(roads);
 
-			// set up roads as being "open" and assemble the list of potential terminii
+			// set up roads as being "open" and assemble the list of potential termini
 			roadLayer = new GeomVectorField(grid_width, grid_height);
 			for (Object o : roadNodes) {
 				GeoNode n = (GeoNode) o;
@@ -291,6 +291,7 @@ public class EngD_MK_8 extends SimState {
 
 			for (Object o : depotLayer.getGeometries()) {
 				Headquarters d = (Headquarters) o;
+				getLargestUnassignedWard();
 				generateRandomParcels(d);
 				d.generateRounds();
 			}
@@ -301,6 +302,7 @@ public class EngD_MK_8 extends SimState {
 				Vehicle v = new Vehicle(p.geometry.getCoordinate(), p);
 				p.assignVehicle(v);
 			}
+			
 
 			// set up the agents in the simulation
 			/*
@@ -346,6 +348,9 @@ public class EngD_MK_8 extends SimState {
 
 	public void setupDepots(GeomVectorField dummyDepots) {
 		Bag depots = dummyDepots.getGeometries();
+		System.out.println();
+		System.out.println("Setting up HQ...");
+		
 		for (Object o : depots) {
 			MasonGeometry mg = (MasonGeometry) o;
 			//int numbays = mg.getIntegerAttribute("loadbays");
@@ -436,17 +441,21 @@ public class EngD_MK_8 extends SimState {
 
 		ArrayList<AidParcel> myParcels = new ArrayList<AidParcel>();
 		Bag centroids = centroidsLayer.getGeometries();
+		//Bag lsoaGeoms = osviLayer.getGeometries();
+		//Bag osviCentroids = osviLayer.getGeometries();
 
+		System.out.println("Generating Random Parcels!");
+		
 		for (int i = 0; i < numParcels; i++) {
 
-			Point deliveryLoc = ((MasonGeometry) centroids.get(random.nextInt(centroids.size()))).geometry
-					.getCentroid();
+			Point deliveryLoc = ((MasonGeometry) centroids.get(random.nextInt(centroids.size()))).geometry.getCentroid();
 			Coordinate myCoordinate = deliveryLoc.getCoordinate();
 
 			// GeoNode gn = (GeoNode) roadNodes.get(random.nextInt(roadNodes.size()));
 			// Coordinate myc = gn.getGeometry().getCoordinate();
 
 			if (!MBR.contains(myCoordinate)) {
+				System.out.println("myCoordinate is in MBR");
 				i--;
 				continue;
 			}
@@ -458,6 +467,7 @@ public class EngD_MK_8 extends SimState {
 			myParcels.add(p);
 		}
 	}
+
 
 	/**
 	 * /////////////// Setup agentGoals ///////////////
@@ -497,38 +507,53 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	int getLargestUnassignedWard() {
-		Bag lsoaGeoms = baseLayer.getGeometries();
+		Bag lsoaGeoms = osviLayer.getGeometries();
 
+		System.out.println();
+		System.out.println("Getting Largest Unassigned Wards!");
+		
 		int highestOSVI = -1;
 		MasonGeometry myCopy = null;
 
 		for (Object o : lsoaGeoms) {
 			MasonGeometry masonGeometry = (MasonGeometry) o;
-			int id = masonGeometry.getIntegerAttribute("ID");
+			int id = masonGeometry.getIntegerAttribute("ID");	// checked the ID column and it’s definitely an Int
+			//int osviRating = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
+			String lsoaID = masonGeometry.getStringAttribute("LSOA_NAME");
+			int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
+			Point highestWard = masonGeometry.geometry.getCentroid();
+			System.out.println(lsoaID + " - OSVI rating: " +tempOSVI + ", ID: " +id);
 			if (assignedWards.contains(id))
 				continue;
 
-			int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
+			//int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
 			// temp = the attribute in the "L_GL_OSVI_" column (int for each LSOA OSVI)
 			if (tempOSVI > highestOSVI) { // if temp is higher than highest
 				highestOSVI = tempOSVI; // update highest to temp
-				myCopy = masonGeometry; // update myCopy to the
+				myCopy = masonGeometry; // update myCopy, which is a POLYGON
+				}
 			}
-
-			if (myCopy == null) {
-				System.out.println("ALERT: LSOA Baselayer is null!");
-			}
+		
+		if (myCopy == null) {
+			System.out.println("ALERT: LSOA Baselayer is null!");
+			return -1; // no ID to find if myCopy is null, so just return a fake value	
 		}
 
 		///////////////////////////////////////////////////////////
 		////// TODO HOW TO STOP myCopy ENDING UP AT NULL??? ///////
 		///////////////////////////////////////////////////////////
-
-		int id = myCopy.getIntegerAttribute("ID");
-		// id = the attribute in the "ID" column (int for each LSOA)
-		assignedWards.add(id); // add ID to the "assignedWards" ArrayList
+		
+		int id = myCopy.getIntegerAttribute("ID");	// Here, id changes to '190', which is the ID for the highestOSVI
 		System.out.println();
-		System.out.println("Highest OSVI Raiting: " + myCopy.getIntegerAttribute("L_GL_OSVI_"));
+		System.out.println("ID: " + id);	// Prints out: the ID for the highestOSVI
+		//System.out.println("myCopy: " +myCopy);	// Prints out: myCopy: POLYGON ((384298.25880604825 218107.66641233652, 384292.3048735745 218096.84950356343… Makes sense, I think!
+		//System.out.println("id: " +id);	// Prints out: the ID for the highestOSVI
+		assignedWards.add(id);	// add ID to the "assignedWards" ArrayList
+		System.out.println("Assigned wards: " +assignedWards);	// Prints out: the ID for the highestOSVI
+		System.out.println();
+		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA: " 
+				+myCopy.getStringAttribute("LSOA_NAME"));
+		System.out.println();
 		return myCopy.getIntegerAttribute("ROAD_ID_1"); // return Road_ID for the chosen LSOA to visit
 	}
 
@@ -542,7 +567,7 @@ public class EngD_MK_8 extends SimState {
 		System.out.println("Simulation ended by user.");
 
 		System.out.println();
-		System.out.println("///////////////////////\nOUTPUTTING FINAL STUFFS\n///////////////////////");
+		System.out.println("///////////////////////\nOUTPUTTING STUFFS\n///////////////////////");
 		System.out.println();
 
 		try {

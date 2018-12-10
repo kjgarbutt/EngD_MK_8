@@ -96,7 +96,8 @@ public class Headquarters extends SpatialAgent implements Burdenable {
 	 */
 	public int enterDepot(Driver d){
 		
-		System.out.println(d.toString() + " has entered the depot!");
+		//System.out.println("Driver: " + d.toString() + " has entered HQ!");
+		System.out.println(d.driverID + " has entered HQ!");
 		
 		if(rounds.size() == 0)
 			return -1; // finished with everything

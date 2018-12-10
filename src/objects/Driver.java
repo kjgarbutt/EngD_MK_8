@@ -2,6 +2,8 @@ package objects;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 import sim.EngD_MK_8;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -32,6 +34,7 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 	ArrayList<String> history = new ArrayList<String>();
 
 	int index = 0;
+	String driverID = null;
 	public Stoppable stopper = null;
 	double speed = 3.;
 
@@ -43,6 +46,8 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 
 	public Driver(EngD_MK_8 world, Coordinate c) {
 		super(c);
+		driverID = "Driver " + RandomStringUtils.randomAlphanumeric(4).toUpperCase();
+				// TODO Add a random number after to differentiate drivers?
 		homeBase = (Coordinate) c.clone();
 		this.world = world;
 		parcels = new ArrayList<AidParcel>();
