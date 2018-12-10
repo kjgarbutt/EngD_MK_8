@@ -544,15 +544,16 @@ public class EngD_MK_8 extends SimState {
 		///////////////////////////////////////////////////////////
 		
 		int id = myCopy.getIntegerAttribute("ID");	// Here, id changes to '190', which is the ID for the highestOSVI
-		System.out.println();
-		System.out.println("ID: " + id);	// Prints out: the ID for the highestOSVI
+		//System.out.println();
+		//System.out.println("ID: " + id);	// Prints out: the ID for the highestOSVI
 		//System.out.println("myCopy: " +myCopy);	// Prints out: myCopy: POLYGON ((384298.25880604825 218107.66641233652, 384292.3048735745 218096.84950356343… Makes sense, I think!
 		//System.out.println("id: " +id);	// Prints out: the ID for the highestOSVI
 		assignedWards.add(id);	// add ID to the "assignedWards" ArrayList
-		System.out.println("Assigned wards: " +assignedWards);	// Prints out: the ID for the highestOSVI
 		System.out.println();
-		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA: " 
-				+myCopy.getStringAttribute("LSOA_NAME"));
+		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA ID: " + id + " ("
+				+myCopy.getStringAttribute("LSOA_NAME") + ")");
+		System.out.println();
+		System.out.println("Current list of Largest Unassigned Wards: " +assignedWards);	// Prints out: the ID for the highestOSVI
 		System.out.println();
 		return myCopy.getIntegerAttribute("ROAD_ID_1"); // return Road_ID for the chosen LSOA to visit
 	}
