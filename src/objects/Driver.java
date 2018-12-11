@@ -100,13 +100,14 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 					index++;
 					System.out.println(
 							//this.toString() + " has NOT been able to deliver parcel to:" + currentDelivery.toString());
-							this.driverID + " has NOT been able to deliver parcel to:" + currentDelivery.toString());
+							this.driverID + " has NOT been able to deliver parcel to: " + currentDelivery.toString());
 							//this.driverID + " has NOT been able to deliver parcel to:" + currentDelivery.getAttribute("id"));
 				} else { // successful delivery! :)
 					this.removeParcel(currentDelivery);
 					myRound.remove(currentDelivery);
-					//System.out.println(this.toString() + " has delivered the parcel to:" + currentDelivery.toString());
-					System.out.println(this.driverID + " has delivered the parcel to:" + currentDelivery.toString());
+					System.out.println(
+							//this.toString() + " has delivered the parcel to:" + currentDelivery.toString());
+							this.driverID + " has delivered the parcel to: " + currentDelivery.toString());
 					currentDelivery.geometry = world.fa.createPoint(currentDelivery.deliveryLocation);
 					world.deliveryLocationLayer.addGeometry(currentDelivery);
 				}
@@ -199,7 +200,7 @@ public class Driver extends TrafficAgent implements Steppable, Burdenable {
 				if (parcels.size() > 0) {
 					System.out.println(
 							//"Round finished - driver " + this.toString() + " has returned with " + parcels.size());
-							"Round finished - driver " + this.driverID + " has returned with " + parcels.size());
+							"Round finished - " + this.driverID + " has returned with: " + parcels.size() +" parcels.");
 					transferTo(parcels, d);
 					if (myVehicle != null)
 						myVehicle.transferTo(myVehicle.parcels, d);

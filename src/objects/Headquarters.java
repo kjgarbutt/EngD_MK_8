@@ -147,7 +147,8 @@ public class Headquarters extends SpatialAgent implements Burdenable {
 					else
 						d.addParcels(newRound);
 					
-					System.out.println(d.driverID + " has taken on a new load: " + newRound.toArray().toString());
+					System.out.println(d.driverID + " has taken on a new consignment: " + newRound.toArray().toString());
+						// prints: [Ljava.lang.Object;@1d9fe5c1
 					leaveDepot(d);
 					d.startRoundClock();
 				}

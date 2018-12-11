@@ -11,7 +11,9 @@ import java.net.URL;
 import java.nio.channels.FileLock;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import sim.engine.SimState;
@@ -195,7 +197,7 @@ public class EngD_MK_8 extends SimState {
 			
 			File wardsFile = new File("data/GloucestershireFinal_LSOA1.shp");
 			ShapeFileImporter.read(wardsFile.toURI().toURL(), world, Polygon.class);
-			System.out.println("Reading in OSVI shapefile " + wardsFile);
+			System.out.println("Reading in OSVI shapefile from " + wardsFile + "...done");
 			//GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true); // for OSVI viz.
 			GeomVectorField dummyDepotLayer = new GeomVectorField(grid_width, grid_height);
 			InputCleaning.readInVectorLayer(centroidsLayer, dirName + "Gloucestershire_Centroids_with_Road_ID.shp",
@@ -459,16 +461,15 @@ public class EngD_MK_8 extends SimState {
 
 		ArrayList<AidParcel> myParcels = new ArrayList<AidParcel>();
 		Bag centroids = centroidsLayer.getGeometries();
-		//Bag lsoaGeoms = osviLayer.getGeometries();
-		//Bag osviCentroids = osviLayer.getGeometries();
-
+		
 		System.out.println("Generating Random Parcels!");
 		
 		for (int i = 0; i < numParcels; i++) {
 
+			//Point deliveryLoc = ((MasonGeometry) lsoaGeoms.get(random.nextInt(lsoaGeoms.size()))).geometry.getCentroid();
 			Point deliveryLoc = ((MasonGeometry) centroids.get(random.nextInt(centroids.size()))).geometry.getCentroid();
 			Coordinate myCoordinate = deliveryLoc.getCoordinate();
-
+			
 			// GeoNode gn = (GeoNode) roadNodes.get(random.nextInt(roadNodes.size()));
 			// Coordinate myc = gn.getGeometry().getCoordinate();
 
@@ -477,8 +478,7 @@ public class EngD_MK_8 extends SimState {
 				i--;
 				continue;
 			}
-			// Coordinate myc = new Coordinate(random.nextInt(myw) + myminx,
-			// random.nextInt(myh) + myminy);
+			// Coordinate myc = new Coordinate(random.nextInt(myw) + myminx, random.nextInt(myh) + myminy);
 
 			AidParcel p = new AidParcel(d);
 			p.setDeliveryLocation(myCoordinate);
@@ -558,7 +558,7 @@ public class EngD_MK_8 extends SimState {
 		}
 
 		///////////////////////////////////////////////////////////
-		////// TODO HOW TO STOP myCopy ENDING UP AT NULL??? ///////
+		////// TODO HOW TO STOP myCopy ENDING UP AT NULL??? /////// 
 		///////////////////////////////////////////////////////////
 		
 		int id = myCopy.getIntegerAttribute("ID");	// Here, id changes to '190', which is the ID for the highestOSVI
