@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.swt.widgets.Item;
+
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.geo.GeomGridField;
@@ -62,23 +64,22 @@ import objects.AidParcel;
 import objects.Vehicle;
 
 /**
- * "MK_8" is the eighth iteration of my EngD project model. Iteration 8 is 
- * a major update to MK_7_2. 
+ * "MK_8" is the eighth iteration of my EngD project model. Iteration 8 is a
+ * major update to MK_7_2.
  * 
- * The model is adapted from the MASON demo, "Gridlock", made by Sarah Wise, 
+ * The model is adapted from the MASON demo, "Gridlock", made by Sarah Wise,
  * Mark Coletti, and Andrew Crooks and "SimpleDrivers," made by Sarah Wise.
  * 
- * The model is an example of a simple ABM framework to explore delivering 
- * goods during a flood. The model reads a number of GIS shapefiles and 
- * displays a road network, two Environment Agency flood maps and a bespoke 
- * Open Source Vulnerability Index (OSVI). The model reads in a .CSV and 
- * generates a predetermined number of agents with set characteristics. 
- * The agents are placed on the road network and are located at a Red Cross 
- * office. The model reads a separate .CSV and assigns goal locations to each 
- * agent at random from a predetermined list. The agents are assigned speeds 
- * at random. Once the model is started, the agents move from A to B, then 
- * they change direction and head back to their start position. The process 
- * repeats until the user quits.
+ * The model is an example of a simple ABM framework to explore delivering goods
+ * during a flood. The model reads a number of GIS shapefiles and displays a
+ * road network, two Environment Agency flood maps and a bespoke Open Source
+ * Vulnerability Index (OSVI). The model reads in a .CSV and generates a
+ * predetermined number of agents with set characteristics. The agents are
+ * placed on the road network and are located at a Red Cross office. The model
+ * reads a separate .CSV and assigns goal locations to each agent at random from
+ * a predetermined list. The agents are assigned speeds at random. Once the
+ * model is started, the agents move from A to B, then they change direction and
+ * head back to their start position. The process repeats until the user quits.
  *
  * @author KJGarbutt
  *
@@ -170,8 +171,7 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	/**
-	 * /////////////// OSVI Polygon Setup ///////////////
-	 * Polygon Setup
+	 * /////////////// OSVI Polygon Setup /////////////// Polygon Setup
 	 */
 	void setup() {
 		// copy over the geometries into a list of Polygons
@@ -194,23 +194,26 @@ public class EngD_MK_8 extends SimState {
 			//////////////////////////////////////////////
 			///////////// READING IN DATA ////////////////
 			//////////////////////////////////////////////
-			
+
 			File wardsFile = new File("data/GloucestershireFinal_LSOA1.shp");
 			ShapeFileImporter.read(wardsFile.toURI().toURL(), world, Polygon.class);
 			System.out.println("Reading in OSVI shapefile from " + wardsFile + "...done");
-			//GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true); // for OSVI viz.
+			// GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true);
+			// // for OSVI viz.
 			GeomVectorField dummyDepotLayer = new GeomVectorField(grid_width, grid_height);
 			InputCleaning.readInVectorLayer(centroidsLayer, dirName + "Gloucestershire_Centroids_with_Road_ID.shp",
-					"Centroids", new Bag());	// Delivery locations
-			InputCleaning.readInVectorLayer(dummyDepotLayer, dirName + "BRC_HQ_GL.shp", "Depots",
-					new Bag());	// For HQ as Depot
-			InputCleaning.readInVectorLayer(headquartersLayer, dirName + "BRC_HQ_GL.shp", "HQ",
-					new Bag()); // Shows HQ
+					"Centroids", new Bag()); // Delivery locations
+			InputCleaning.readInVectorLayer(dummyDepotLayer, dirName + "BRC_HQ_GL.shp", "Depots", new Bag()); // For HQ
+																												// as
+																												// Depot
+			InputCleaning.readInVectorLayer(headquartersLayer, dirName + "BRC_HQ_GL.shp", "HQ", new Bag()); // Shows HQ
 			InputCleaning.readInVectorLayer(roadLayer, dirName + "GL_ITN_MultipartToSinglepart.shp", "Road Network",
 					new Bag());
 			InputCleaning.readInVectorLayer(osviLayer, dirName + "GloucestershireFinal_LSOA1.shp", "OSVI", new Bag());
-			InputCleaning.readInVectorLayer(boundaryLayer, dirName + "Gloucestershire_Boundary_Line.shp", "County Boundary", new Bag());
-			//InputCleaning.readInVectorLayer(baseLayer, dirName + "GloucestershireFinal_LSOA1.shp", "OSVI", new Bag());
+			InputCleaning.readInVectorLayer(boundaryLayer, dirName + "Gloucestershire_Boundary_Line.shp",
+					"County Boundary", new Bag());
+			// InputCleaning.readInVectorLayer(baseLayer, dirName +
+			// "GloucestershireFinal_LSOA1.shp", "OSVI", new Bag());
 			InputCleaning.readInVectorLayer(fz2Layer, dirName + "Gloucestershire_FZ_2.shp", "Flood Zone 2", new Bag());
 			InputCleaning.readInVectorLayer(fz3Layer, dirName + "Gloucestershire_FZ_3.shp", "Flood Zone 3", new Bag());
 			// "Parking", new Bag());
@@ -228,8 +231,8 @@ public class EngD_MK_8 extends SimState {
 			heatmap.setMBR(MBR);
 			heatmap.setGrid(new IntGrid2D((int) (MBR.getWidth() / 100), (int) (MBR.getHeight() / 100), 0));
 
-			//System.out.println("Setting up OSVI Portrayals...");
-			//System.out.println();
+			// System.out.println("Setting up OSVI Portrayals...");
+			// System.out.println();
 
 			setup();
 
@@ -300,7 +303,8 @@ public class EngD_MK_8 extends SimState {
 			fz2Layer.setMBR(MBR);
 			fz3Layer.setMBR(MBR);
 			headquartersLayer.setMBR(MBR);
-			osviLayer.setMBR(MBR);;
+			osviLayer.setMBR(MBR);
+			;
 			baseLayer.setMBR(MBR);
 			boundaryLayer.setMBR(MBR);
 
@@ -312,7 +316,7 @@ public class EngD_MK_8 extends SimState {
 
 			for (Object o : depotLayer.getGeometries()) {
 				Headquarters d = (Headquarters) o;
-				getLargestUnassignedWard();
+				// getLargestUnassignedWard();
 				generateRandomParcels(d);
 				d.generateRounds();
 			}
@@ -322,6 +326,7 @@ public class EngD_MK_8 extends SimState {
 				agentLayer.addGeometry(p);
 				Vehicle v = new Vehicle(p.geometry.getCoordinate(), p);
 				p.assignVehicle(v);
+				getLargestUnassignedWard();
 			}
 
 			// set up the agents in the simulation
@@ -370,11 +375,11 @@ public class EngD_MK_8 extends SimState {
 		Bag depots = dummyDepots.getGeometries();
 		System.out.println();
 		System.out.println("Setting up HQ...");
-		
+
 		for (Object o : depots) {
 			MasonGeometry mg = (MasonGeometry) o;
-			//int numbays = mg.getIntegerAttribute("loadbays");
-			//int numbays = 15;
+			// int numbays = mg.getIntegerAttribute("loadbays");
+			// int numbays = 15;
 			GeoNode gn = snapPointToNode(mg.geometry.getCoordinate());
 
 			Headquarters d = new Headquarters(gn.geometry.getCoordinate(), numBays, this);
@@ -458,18 +463,51 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	public void generateRandomParcels(Headquarters d) {
+		///////////////// HASHMAP FUN TIMES /////////////////////////
+		// Creation of HashMap e.g. HashMap<String, String> parcelsPerWard = new HashMap<>(); 
+		HashMap<Integer, ArrayList> parcelsPerWard = new HashMap<Integer, ArrayList>();
+		// Adding values to HashMap as ("Keys", "Values")
+		parcelsPerWard.put(1, new ArrayList()); // the Key = '1', the Value = 'a new ArrayList'
+		parcelsPerWard.get(1); // poops out ArrayList
+		System.out.println("ParcelsPerWard: " + parcelsPerWard.get(1)); // should print out the entire ArrayList
+		System.out.println("Size Of HashMap : " + parcelsPerWard.size()); // should print the size of the HashMap
+		if (!parcelsPerWard.isEmpty()) {
+			System.out.println("The HashMap ParcelsPerWard is NOT empty!");
+		} else if (parcelsPerWard.isEmpty()) {
+			System.out.println("The HashMap ParcelsPerWard IS empty!");
+		}
 
+		
+		
+		HashMap<Integer, ArrayList<Item>> itemsHashMap = new HashMap<Integer, ArrayList<Item>>();
+
+		void addToList(Integer mapKey, Item myItem) {
+		    ArrayList<Item> itemsList = itemsHashMap.get(mapKey);
+		    // if list does not exist create it
+		    if(itemsList == null) {
+		         itemsList = new ArrayList<Item>();
+		         itemsList.add(myItem);
+		         itemsHashMap.put(mapKey, itemsList);
+		    } else {
+		        // add if item is not already in list
+		        if(!itemsList.contains(myItem)) itemsList.add(myItem);
+		    }
+		}
+		
+	
+		///////////////// HASHMAP FUN TIMES /////////////////////////
 		ArrayList<AidParcel> myParcels = new ArrayList<AidParcel>();
 		Bag centroids = centroidsLayer.getGeometries();
-		
-		System.out.println("Generating Random Parcels!");
-		
-		for (int i = 0; i < numParcels; i++) {
 
-			//Point deliveryLoc = ((MasonGeometry) lsoaGeoms.get(random.nextInt(lsoaGeoms.size()))).geometry.getCentroid();
-			Point deliveryLoc = ((MasonGeometry) centroids.get(random.nextInt(centroids.size()))).geometry.getCentroid();
+		System.out.println("Generating Random Parcels!");
+
+		for (int i = 0; i < numParcels; i++) {
+			// Point deliveryLoc = ((MasonGeometry)
+			// lsoaGeoms.get(random.nextInt(lsoaGeoms.size()))).geometry.getCentroid();
+			Point deliveryLoc = ((MasonGeometry) centroids.get(random.nextInt(centroids.size()))).geometry
+					.getCentroid();
 			Coordinate myCoordinate = deliveryLoc.getCoordinate();
-			
+
 			// GeoNode gn = (GeoNode) roadNodes.get(random.nextInt(roadNodes.size()));
 			// Coordinate myc = gn.getGeometry().getCoordinate();
 
@@ -478,7 +516,8 @@ public class EngD_MK_8 extends SimState {
 				i--;
 				continue;
 			}
-			// Coordinate myc = new Coordinate(random.nextInt(myw) + myminx, random.nextInt(myh) + myminy);
+			// Coordinate myc = new Coordinate(random.nextInt(myw) + myminx,
+			// random.nextInt(myh) + myminy);
 
 			AidParcel p = new AidParcel(d);
 			p.setDeliveryLocation(myCoordinate);
@@ -486,15 +525,14 @@ public class EngD_MK_8 extends SimState {
 		}
 	}
 
-
 	/**
-	 * /////////////// Setup agentGoals ///////////////
-	 * Read in the agent goals CSV
+	 * /////////////// Setup agentGoals /////////////// Read in the agent goals CSV
 	 * 
 	 * @param agentfilename
 	 * @return
 	 *
 	 */
+	/*
 	public ArrayList<String> agentGoals(String agentfilename) throws IOException {
 		String csvGoal = null;
 		BufferedReader agentGoalsBuffer = null;
@@ -523,24 +561,25 @@ public class EngD_MK_8 extends SimState {
 		}
 		return csvData;
 	}
+	*/
 
 	int getLargestUnassignedWard() {
 		Bag lsoaGeoms = centroidsLayer.getGeometries();
 
 		System.out.println();
 		System.out.println("Getting Largest Unassigned Wards!");
-		
+
 		int highestOSVI = -1;
 		MasonGeometry myCopy = null;
 
 		for (Object o : lsoaGeoms) {
 			MasonGeometry masonGeometry = (MasonGeometry) o;
-			int id = masonGeometry.getIntegerAttribute("ID");	// checked the ID column and it’s definitely an Int
-			//int osviRating = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
+			int id = masonGeometry.getIntegerAttribute("ID"); // checked the ID column and it’s definitely an Int
+			// int osviRating = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
 			String lsoaID = masonGeometry.getStringAttribute("LSOA_NAME");
 			int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
 			Point highestWard = masonGeometry.geometry.getCentroid();
-			System.out.println(lsoaID + " - OSVI rating: " +tempOSVI + ", ID: " +id);
+			System.out.println(lsoaID + " - OSVI rating: " + tempOSVI + ", ID: " + id);
 			if (assignedWards.contains(id))
 				continue;
 
@@ -548,29 +587,26 @@ public class EngD_MK_8 extends SimState {
 			if (tempOSVI > highestOSVI) { // if temp is higher than highest
 				highestOSVI = tempOSVI; // update highest to temp
 				myCopy = masonGeometry; // update myCopy, which is a POLYGON
-				}
-			else if (tempOSVI == highestOSVI) { // if temp is equal to highest
-				highestOSVI = tempOSVI; // update highest to temp
-				myCopy = masonGeometry; // update myCopy, which is a POLYGON		
 			}
 		}
-		
+
 		if (myCopy == null) {
 			System.out.println("ALERT: LSOA Baselayer is null!");
-			return -1; // no ID to find if myCopy is null, so just return a fake value	
+			return -1; // no ID to find if myCopy is null, so just return a fake value
 		}
 
 		///////////////////////////////////////////////////////////
-		////// TODO HOW TO STOP myCopy ENDING UP AT NULL??? /////// 
+		////// TODO HOW TO STOP myCopy ENDING UP AT NULL??? ///////
 		///////////////////////////////////////////////////////////
-		
-		int id = myCopy.getIntegerAttribute("ID");	// Here, id changes to '190', which is the ID for the highestOSVI
-		assignedWards.add(id);	// add ID to the "assignedWards" ArrayList
+
+		int id = myCopy.getIntegerAttribute("ID"); // Here, id changes to the highestOSVI
+		assignedWards.add(id); // add ID to the "assignedWards" ArrayList
 		System.out.println();
-		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA ID: " + id + " ("
-				+myCopy.getStringAttribute("LSOA_NAME") + ")");
+		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA ID: "
+				+ id + " (" + myCopy.getStringAttribute("LSOA_NAME") + ")");
 		System.out.println();
-		System.out.println("Current list of Largest Unassigned Wards: " +assignedWards);	// Prints out: the ID for the highestOSVI
+		System.out.println("Current list of Largest Unassigned Wards: " + assignedWards); // Prints out: the ID for the
+																							// highestOSVI
 		System.out.println();
 		return myCopy.getIntegerAttribute("ROAD_ID"); // return Road_ID for the chosen LSOA to visit
 	}
@@ -619,8 +655,8 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	/**
-	 * /////////////// Main Function ///////////////
-	 * Main function allows simulation to be run in stand-alone, non-GUI mode
+	 * /////////////// Main Function /////////////// Main function allows simulation
+	 * to be run in stand-alone, non-GUI mode
 	 */
 	public static void main(String[] args) {
 
