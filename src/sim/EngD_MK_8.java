@@ -525,7 +525,7 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	int getLargestUnassignedWard() {
-		Bag lsoaGeoms = osviLayer.getGeometries();
+		Bag lsoaGeoms = centroidsLayer.getGeometries();
 
 		System.out.println();
 		System.out.println("Getting Largest Unassigned Wards!");
@@ -544,13 +544,16 @@ public class EngD_MK_8 extends SimState {
 			if (assignedWards.contains(id))
 				continue;
 
-			//int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
 			// temp = the attribute in the "L_GL_OSVI_" column (int for each LSOA OSVI)
 			if (tempOSVI > highestOSVI) { // if temp is higher than highest
 				highestOSVI = tempOSVI; // update highest to temp
 				myCopy = masonGeometry; // update myCopy, which is a POLYGON
 				}
+			else if (tempOSVI == highestOSVI) { // if temp is equal to highest
+				highestOSVI = tempOSVI; // update highest to temp
+				myCopy = masonGeometry; // update myCopy, which is a POLYGON		
 			}
+		}
 		
 		if (myCopy == null) {
 			System.out.println("ALERT: LSOA Baselayer is null!");
@@ -569,7 +572,7 @@ public class EngD_MK_8 extends SimState {
 		System.out.println();
 		System.out.println("Current list of Largest Unassigned Wards: " +assignedWards);	// Prints out: the ID for the highestOSVI
 		System.out.println();
-		return myCopy.getIntegerAttribute("ROAD_ID_1"); // return Road_ID for the chosen LSOA to visit
+		return myCopy.getIntegerAttribute("ROAD_ID"); // return Road_ID for the chosen LSOA to visit
 	}
 
 	/**
