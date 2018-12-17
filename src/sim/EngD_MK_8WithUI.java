@@ -270,8 +270,8 @@ public class EngD_MK_8WithUI extends GUIState {
 	}
 
 	/**
-	 * /////////////// Model Finish /////////////// Quits the simulation and cleans
-	 * up.
+	 * /////////////// Model Finish /////////////// 
+	 * Quits the simulation and cleans up.
 	 */
 	public void quit() {
 		System.out.println("Model closed.");

@@ -14,7 +14,7 @@ public class AidParcel extends MobileAgent {
 	Burdenable carryingUnit = null;
 	Coordinate deliveryLocation;
 	double dim_x, dim_y, dim_z, weight;
-	ArrayList<String> history;
+	ArrayList<String> history = new ArrayList<String>();
 	String parcelID = null;
 	int status; // 0 = undelivered, 1 = failed delivery attempt, 2 = out for delivery, 3 =
 				// delivered
@@ -63,6 +63,10 @@ public class AidParcel extends MobileAgent {
 		}
 		status = 1; // failed delivery attempt
 		return false;
+	}
+	
+	public ArrayList<String> getHistory() {
+		return history;
 	}
 
 }

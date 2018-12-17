@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -142,9 +143,12 @@ public class EngD_MK_8 extends SimState {
 	public ArrayList<Driver> agents = new ArrayList<Driver>(10);
 	ArrayList<Integer> assignedWards = new ArrayList<Integer>();
 	ArrayList<Integer> visitedWards = new ArrayList<Integer>(); // TODO record visited LSOAs
+	ArrayList<Integer> deliveredParcels = new ArrayList<Integer>(); // TODO record successfully delivered parcels
+	ArrayList<Integer> failedParcels = new ArrayList<Integer>(); // TODO record all parcels that failed + their destination (LSOA)
 	ArrayList<Polygon> polys = new ArrayList<Polygon>();
 	ArrayList<String> csvData = new ArrayList<String>();
 	ArrayList<ArrayList<AidParcel>> rounds;
+	public ArrayList<AidParcel> history;
 
 	public GeometryFactory fa = new GeometryFactory();
 
@@ -201,7 +205,7 @@ public class EngD_MK_8 extends SimState {
 			// GeomVectorFieldPortrayal polyPortrayal = new GeomVectorFieldPortrayal(true);
 			// // for OSVI viz.
 			GeomVectorField dummyDepotLayer = new GeomVectorField(grid_width, grid_height);
-			InputCleaning.readInVectorLayer(centroidsLayer, dirName + "Gloucestershire_Centroids_with_Road_ID.shp",
+			InputCleaning.readInVectorLayer(centroidsLayer, dirName + "Gloucestershire_Centroids_with_Road_ID_Households.shp",
 					"Centroids", new Bag()); // Delivery locations
 			InputCleaning.readInVectorLayer(dummyDepotLayer, dirName + "BRC_HQ_GL.shp", "Depots", new Bag()); // For HQ
 																												// as
@@ -299,12 +303,10 @@ public class EngD_MK_8 extends SimState {
 			majorRoadNodesLayer.setMBR(MBR);
 			deliveryLocationLayer.setMBR(MBR);
 			agentLayer.setMBR(MBR);
-			// parkingLayer.setMBR(MBR);
 			fz2Layer.setMBR(MBR);
 			fz3Layer.setMBR(MBR);
 			headquartersLayer.setMBR(MBR);
 			osviLayer.setMBR(MBR);
-			;
 			baseLayer.setMBR(MBR);
 			boundaryLayer.setMBR(MBR);
 
@@ -317,7 +319,7 @@ public class EngD_MK_8 extends SimState {
 			for (Object o : depotLayer.getGeometries()) {
 				Headquarters d = (Headquarters) o;
 				// getLargestUnassignedWard();
-				generateRandomParcels(d);
+				generateParcels(d);
 				d.generateRounds();
 			}
 
@@ -462,48 +464,55 @@ public class EngD_MK_8 extends SimState {
 			return null;
 	}
 
-	public void generateRandomParcels(Headquarters d) {
+	public void generateParcels(Headquarters d) {
+		System.out.println("Generating Parcels!");
 		///////////////// HASHMAP FUN TIMES /////////////////////////
 		// Creation of HashMap e.g. HashMap<String, String> parcelsPerWard = new HashMap<>(); 
 		HashMap<Integer, ArrayList> parcelsPerWard = new HashMap<Integer, ArrayList>();
 		// Adding values to HashMap as ("Keys", "Values")
-		parcelsPerWard.put(1, new ArrayList()); // the Key = '1', the Value = 'a new ArrayList'
+		parcelsPerWard.put(1, new ArrayList(assignedWards)); // the Key = '1', the Value = 'a new ArrayList'
 		parcelsPerWard.get(1); // poops out ArrayList
 		System.out.println("ParcelsPerWard: " + parcelsPerWard.get(1)); // should print out the entire ArrayList
 		System.out.println("Size Of HashMap : " + parcelsPerWard.size()); // should print the size of the HashMap
 		if (!parcelsPerWard.isEmpty()) {
-			System.out.println("The HashMap ParcelsPerWard is NOT empty!");
+			System.out.println("The HashMap " + "'" + "ParcelsPerWard' is NOT empty!");
 		} else if (parcelsPerWard.isEmpty()) {
-			System.out.println("The HashMap ParcelsPerWard IS empty!");
+			System.out.println("The HashMap " + "'" + "ParcelsPerWard' IS empty!");
 		}
 
 		
-		
-		HashMap<Integer, ArrayList<Item>> itemsHashMap = new HashMap<Integer, ArrayList<Item>>();
+		//HashMap<Integer, ArrayList<Item>> itemsHashMap = new HashMap<Integer, ArrayList<Item>>();
 
-		void addToList(Integer mapKey, Item myItem) {
-		    ArrayList<Item> itemsList = itemsHashMap.get(mapKey);
+		//void addToList(Integer mapKey, Item myItem) {
+		    //ArrayList<Item> itemsList = itemsHashMap.get(mapKey);
 		    // if list does not exist create it
-		    if(itemsList == null) {
-		         itemsList = new ArrayList<Item>();
-		         itemsList.add(myItem);
-		         itemsHashMap.put(mapKey, itemsList);
-		    } else {
+		    //if(itemsList == null) {
+		         //itemsList = new ArrayList<Item>();
+		         //itemsList.add(myItem);
+		         //itemsHashMap.put(mapKey, itemsList);
+		    //} else {
 		        // add if item is not already in list
-		        if(!itemsList.contains(myItem)) itemsList.add(myItem);
-		    }
-		}
+		        //if(!itemsList.contains(myItem)) itemsList.add(myItem);
+		    //}
+		//}
 		
+		//https://coderanch.com/t/631749/java/arraylist-index-items-hashmap-key
 	
-		///////////////// HASHMAP FUN TIMES /////////////////////////
+		///////////////// END OF HASHMAP FUN TIMES /////////////////////////
 		ArrayList<AidParcel> myParcels = new ArrayList<AidParcel>();
 		Bag centroids = centroidsLayer.getGeometries();
 
-		System.out.println("Generating Random Parcels!");
-
+		System.out.println();
+		System.out.println("Assigning aid parcels...");
+		System.out.println();
+		
 		for (int i = 0; i < numParcels; i++) {
 			// Point deliveryLoc = ((MasonGeometry)
 			// lsoaGeoms.get(random.nextInt(lsoaGeoms.size()))).geometry.getCentroid();
+			//Iterator<Integer> assignedWardsIterator = assignedWards.iterator();
+			//while (assignedWardsIterator.hasNext()) {
+				//System.out.println(assignedWardsIterator.next());	
+			//}
 			Point deliveryLoc = ((MasonGeometry) centroids.get(random.nextInt(centroids.size()))).geometry
 					.getCentroid();
 			Coordinate myCoordinate = deliveryLoc.getCoordinate();
@@ -564,22 +573,24 @@ public class EngD_MK_8 extends SimState {
 	*/
 
 	int getLargestUnassignedWard() {
+		System.out.println("Getting unassigned LSOA with highest OSVI ratings...");
 		Bag lsoaGeoms = centroidsLayer.getGeometries();
-
-		System.out.println();
-		System.out.println("Getting Largest Unassigned Wards!");
 
 		int highestOSVI = -1;
 		MasonGeometry myCopy = null;
 
-		for (Object o : lsoaGeoms) {
-			MasonGeometry masonGeometry = (MasonGeometry) o;
+		for (Iterator it = lsoaGeoms.iterator(); it.hasNext(); ) {
+		    MasonGeometry masonGeometry = (MasonGeometry)it.next();
+		    boolean isLast = !it.hasNext();
+		//for (Object o : lsoaGeoms) {
+			//MasonGeometry masonGeometry = (MasonGeometry) o;
 			int id = masonGeometry.getIntegerAttribute("ID"); // checked the ID column and it’s definitely an Int
 			// int osviRating = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
 			String lsoaID = masonGeometry.getStringAttribute("LSOA_NAME");
 			int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
+			int households = masonGeometry.getIntegerAttribute("Household"); // would give the num of households for each LSOA. Use for numParcels.
 			Point highestWard = masonGeometry.geometry.getCentroid();
-			System.out.println(lsoaID + " - OSVI rating: " + tempOSVI + ", ID: " + id);
+			//System.out.println(lsoaID + " - OSVI rating: " + tempOSVI + ", ID: " + id);
 			if (assignedWards.contains(id))
 				continue;
 
@@ -602,13 +613,12 @@ public class EngD_MK_8 extends SimState {
 		int id = myCopy.getIntegerAttribute("ID"); // Here, id changes to the highestOSVI
 		assignedWards.add(id); // add ID to the "assignedWards" ArrayList
 		System.out.println();
-		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for LSOA ID: "
-				+ id + " (" + myCopy.getStringAttribute("LSOA_NAME") + ")");
+		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") 
+				+ " for: " + myCopy.getStringAttribute("LSOA_NAME")
+				+ " and it has " + myCopy.getIntegerAttribute("Household") + " households that may need assistance.");
+		System.out.println("Current list of Largest Unassigned Wards: " + assignedWards); // Prints out: the ID for the highestOSVI
 		System.out.println();
-		System.out.println("Current list of Largest Unassigned Wards: " + assignedWards); // Prints out: the ID for the
-																							// highestOSVI
-		System.out.println();
-		return myCopy.getIntegerAttribute("ROAD_ID"); // return Road_ID for the chosen LSOA to visit
+		return myCopy.getIntegerAttribute("ROAD_ID");  // TODO: ID instead?
 	}
 
 	/**
@@ -632,6 +642,12 @@ public class EngD_MK_8 extends SimState {
 				for (String s : a.getHistory())
 					output.write(s + "\n");
 			}
+			
+			/*for (AidParcel d : history) {
+				for (String s : d.getHistory())
+					output.write(s + "\n");
+			}*/
+			
 			output.close();
 
 		} catch (IOException e) {
@@ -655,8 +671,9 @@ public class EngD_MK_8 extends SimState {
 	}
 
 	/**
-	 * /////////////// Main Function /////////////// Main function allows simulation
-	 * to be run in stand-alone, non-GUI mode
+	 * /////////////// Main Function /////////////// 
+	 * 
+	 * Main function allows simulation to be run in stand-alone, non-GUI mode
 	 */
 	public static void main(String[] args) {
 
@@ -665,19 +682,19 @@ public class EngD_MK_8 extends SimState {
 			System.exit(0);
 		}
 
-		EngD_MK_8 simpleDrivers = new EngD_MK_8(System.currentTimeMillis());
+		EngD_MK_8 EngD_MK_8 = new EngD_MK_8(System.currentTimeMillis());
 
 		System.out.println("Loading...");
 
-		simpleDrivers.start();
+		EngD_MK_8.start();
 
 		System.out.println("Running...");
 
 		for (int i = 0; i < 288 * 3; i++) {
-			simpleDrivers.schedule.step(simpleDrivers);
+			EngD_MK_8.schedule.step(EngD_MK_8);
 		}
 
-		simpleDrivers.finish();
+		EngD_MK_8.finish();
 
 		System.out.println("...run finished");
 
