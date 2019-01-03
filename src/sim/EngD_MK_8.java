@@ -524,22 +524,22 @@ public class EngD_MK_8 extends SimState {
 		for (Object o : centroidGeoms) {
 			MasonGeometry masonGeometry = (MasonGeometry) o;
 			int households = masonGeometry.getIntegerAttribute("Household");
-
+			//System.out.println(households);
 			for (int i = 0; i < households; i++) {
-				// Point deliveryLoc = ((MasonGeometry)
-				// lsoaGeoms.get(random.nextInt(lsoaGeoms.size()))).geometry.getCentroid();
+				//Point deliveryLoc = ((MasonGeometry)
+				//lsoaGeoms.get(random.nextInt(lsoaGeoms.size()))).geometry.getCentroid();
 				// Iterator<Integer> assignedWardsIterator = assignedWards.iterator();
 				// while (assignedWardsIterator.hasNext()) {
-				// System.out.println(assignedWardsIterator.next());
+				//System.out.println(assignedWardsIterator.next());
 				// }
 
-				Point deliveryLoc = gn.getGeometry().getCoordinate();
-				//Point deliveryLoc = ((MasonGeometry) centroidGeoms.get(random.nextInt(centroidGeoms.size()))).geometry
-				//		.getCentroid();
+				//Point deliveryLoc = gn.getGeometry().getCoordinate();
+				Point deliveryLoc = ((MasonGeometry) centroidGeoms.get(random.nextInt(centroidGeoms.size()))).geometry
+						.getCentroid();
 				Coordinate myCoordinate = deliveryLoc.getCoordinate();
-
-				// GeoNode gn = (GeoNode) roadNodes.get(random.nextInt(roadNodes.size()));
-				// Coordinate myc = gn.getGeometry().getCoordinate();
+			
+				//GeoNode gn = (GeoNode) roadNodes.get(random.nextInt(roadNodes.size()));
+				//Coordinate myc = gn.getGeometry().getCoordinate();
 
 				if (!MBR.contains(myCoordinate)) {
 					System.out.println("myCoordinate is in MBR");
