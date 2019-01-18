@@ -485,28 +485,28 @@ public class EngD_MK_8 extends SimState {
 			System.out.println("The HashMap " + "'ParcelsPerWard' IS empty!");
 		}
 
-		// Iterator hmIterator = parcelsPerWard.entrySet().iterator();
-		// while (hmIterator.hasNext()) {
-		// System.out.println(parcelsPerWard.get(assignedWards));
-		// }
+		//Iterator hmIterator = parcelsPerWard.entrySet().iterator();
+		//while (hmIterator.hasNext()) {
+		//System.out.println(parcelsPerWard.get(assignedWards));
+		//}
 
 		System.out.println("Is the key '20' present? " + parcelsPerWard.containsKey(20));
 
-		// HashMap<Integer, ArrayList<Item>> itemsHashMap = new HashMap<Integer,
-		// ArrayList<Item>>();
+		HashMap<Integer, ArrayList<Item>> itemsHashMap = new HashMap<Integer,
+		ArrayList<Item>>();
 
-		// void addToList(Integer mapKey, Item myItem) {
-		// ArrayList<Item> itemsList = itemsHashMap.get(mapKey);
-		// if list does not exist create it
-		// if(itemsList == null) {
-		// itemsList = new ArrayList<Item>();
-		// itemsList.add(myItem);
-		// itemsHashMap.put(mapKey, itemsList);
-		// } else {
-		// add if item is not already in list
-		// if(!itemsList.contains(myItem)) itemsList.add(myItem);
-		// }
-		// }
+		//void addToList(Integer mapKey, Item myItem) {
+		//ArrayList<Item> itemsList = itemsHashMap.get(mapKey);
+		//if list does not exist create it
+		//if(itemsList == null) {
+		//itemsList = new ArrayList<Item>();
+		//itemsList.add(myItem);
+		//itemsHashMap.put(mapKey, itemsList);
+		//} else {
+		//add if item is not already in list
+		//if(!itemsList.contains(myItem)) itemsList.add(myItem);
+		//}
+		//}
 
 		// https://coderanch.com/t/631749/java/arraylist-index-items-hashmap-key
 		// https://www.geeksforgeeks.org/traverse-through-a-hashmap-in-java/
