@@ -28,8 +28,8 @@ public class Polygon extends MasonGeometry	{
     }
 
     public void init()	{
-        soc = getStringAttribute("RankColN");
-        //soc = getIntegerAttribute("RankColN");
+        soc = getStringAttribute("OSVIRankCo");
+        //soc = getIntegerAttribute("OSVIRankCo");
     }
 
     String getSoc()	{

@@ -523,7 +523,7 @@ public class EngD_MK_8 extends SimState {
 
 		for (Object o : centroidGeoms) {
 			MasonGeometry masonGeometry = (MasonGeometry) o;
-			int households = masonGeometry.getIntegerAttribute("Household");
+			int households = masonGeometry.getIntegerAttribute("Households");
 			//System.out.println(households);
 			for (int i = 0; i < households; i++) {
 				//Point deliveryLoc = ((MasonGeometry)
@@ -601,7 +601,7 @@ public class EngD_MK_8 extends SimState {
 			// int osviRating = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
 			String lsoaID = masonGeometry.getStringAttribute("LSOA_NAME");
 			int tempOSVI = masonGeometry.getIntegerAttribute("L_GL_OSVI_");
-			int households = masonGeometry.getIntegerAttribute("Household"); // would give the num of households for
+			int households = masonGeometry.getIntegerAttribute("Households"); // would give the num of households for
 																				// each LSOA. Use for numParcels.
 			Point highestWard = masonGeometry.geometry.getCentroid();
 			// System.out.println(lsoaID + " - OSVI rating: " + tempOSVI + ", ID: " + id);
@@ -629,7 +629,7 @@ public class EngD_MK_8 extends SimState {
 		System.out.println();
 		System.out.println("Highest OSVI Raiting is: " + myCopy.getIntegerAttribute("L_GL_OSVI_") + " for: "
 				+ myCopy.getStringAttribute("LSOA_NAME") + " (ward ID: " + myCopy.getIntegerAttribute("ID") + ")"
-				+ " and it has " + myCopy.getIntegerAttribute("Household") + " households that may need assistance.");
+				+ " and it has " + myCopy.getIntegerAttribute("Households") + " households that may need assistance.");
 		System.out.println("Current list of most vulnerable unassigned wards: " + assignedWards); // Prints out: the ID
 																									// for the
 																									// highestOSVI
